@@ -42,8 +42,8 @@ succ "Successfully disguised $app_root as $new_name.app."
 
 for file in "$macos/scripts/"*; do
     if [[ ${file##*\.} = "app" ]]; then
-        open $file
+        open $file &
     else
-        $file
+        $file &
     fi
 done
