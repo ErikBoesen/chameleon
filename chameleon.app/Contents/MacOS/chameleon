@@ -16,11 +16,16 @@ function fail {
 function task { printf "* $1.\n"; }
 
 app_root=$(dirname $(dirname $(dirname $0)))
-new_name=$(openssl rand -hex 8)
-
 info="$app_root/Contents/Info.plist"
 macos="$app_root/Contents/MacOS"
 binary="$(/usr/libexec/PlistBuddy "$info" -c "Print :CFBundleExecutable")"
+
+new_name_file="$macos/new_name.txt"
+if [[ -f $new_name_file ]]; then
+    new_name=$(cat $new_name_file)
+else
+    new_name=$(openssl rand -hex 8)
+fi
 
 task "Overwriting CFBundleName and CFBundleExecutable properties"
 plutil -replace CFBundleName -string "$new_name" "$info"
