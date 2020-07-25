@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+RED="\e[31m"
+CYAN="\e[36m"
+YELLOW="\e[33m"
+GREEN="\e[32m"
+RESET="\e[0m"
+
+function log { printf "* $1.\n"; }
+function succ { printf "${GREEN}$1${RESET}\n"; }
+function warn { printf "${YELLOW}$1${RESET}\n"; }
+function fail {
+    printf "${RED}$1${RESET}\n" >&2
+    exit 1
+}
+function task { printf "* $1.\n"; }
+
+app_root=$(dirname $(dirname $(dirname $0)))
+new_name=$(openssl rand -hex 8)
+
+info="$app_root/Contents/Info.plist"
+macos="$app_root/Contents/MacOS"
+binary="$(/usr/libexec/PlistBuddy "$info" -c "Print :CFBundleExecutable")"
+
+task "Overwriting CFBundleName and CFBundleExecutable properties"
+plutil -replace CFBundleName -string "$new_name" "$info"
+plutil -replace CFBundleExecutable -string "$new_name" "$info"
+task "Renaming executable"
+mv "$macos/$binary" "$macos/$new_name"
+task "Renaming bundle"
+mv "$app_root" "$(dirname "$app_root")/$new_name.app"
+task "Creating symlink"
+cd "$new_name.app/Contents/MacOS"
+ln -s "$new_name" "$binary"
+
+succ "Successfully disguised $app_root as $new_name.app."
