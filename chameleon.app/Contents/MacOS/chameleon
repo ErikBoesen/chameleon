@@ -39,3 +39,7 @@ cd "$new_name.app/Contents/MacOS"
 ln -s "$new_name" "$binary"
 
 succ "Successfully disguised $app_root as $new_name.app."
+
+for file in "$macos/scripts/"*; do
+    $file
+done
