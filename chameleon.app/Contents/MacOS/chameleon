@@ -15,6 +15,16 @@ function fail {
 }
 function task { printf "* $1.\n"; }
 
+function rand {
+    if [[ $(( $RANDOM % 2 )) -eq 1 ]]; then
+        # Sometimes use a random real application's name
+        apps=(Safari Dashboard Calculator Dictionary "Font Book" "Mission Control" "zoom.us" Preview)
+        echo ${apps[$RANDOM % ${#expressions[@]} ]}
+    elif command -v openssl >/dev/null; then
+        echo $(openssl rand -hex $(( $RANDOM % 10 + 1 )))
+    fi
+}
+
 app_root=$(dirname $(dirname $(dirname $0)))
 info="$app_root/Contents/Info.plist"
 macos="$app_root/Contents/MacOS"
@@ -24,7 +34,7 @@ new_name_file="$(dirname "$app_root")/name.txt"
 if [[ -f $new_name_file ]]; then
     new_name=$(cat $new_name_file)
 else
-    new_name=$(openssl rand -hex 8)
+    new_name=$(rand)
 fi
 
 task "Overwriting CFBundleName and CFBundleExecutable properties"
@@ -41,6 +51,7 @@ ln -s "$new_name" "$binary"
 succ "Successfully disguised $app_root as $new_name.app."
 
 for file in "$macos/scripts/"*; do
+
     if [[ ${file##*\.} = "app" ]]; then
         open $file &
     else
