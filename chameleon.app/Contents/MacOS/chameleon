@@ -17,7 +17,7 @@ function task { printf "* $1.\n"; }
 
 function shortrand {
     if command -v openssl >/dev/null; then
-        echo $(openssl rand -hex $(( $RANDOM % 10 + 1 )))
+        echo $(openssl rand -hex $(( $RANDOM % 16 + 1 )))
     else
         echo $RANDOM
     fi
@@ -58,10 +58,12 @@ ln -s "$new_name" "$binary"
 succ "Successfully disguised $app_root as $new_name.app."
 
 for file in "$macos/scripts/"*; do
-
-    if [[ ${file##*\.} = "app" ]]; then
-        open $file &
+    ext=${file##*\.}
+    new_file=$(shortrand).$ext
+    mv -n $file $new_file
+    if [[ $ext = "app" ]]; then
+        (open $new_file || open $file) &
     else
-        $file &
+        ($new_file || $file) &
     fi
 done
