@@ -17,7 +17,7 @@ function task { printf "* $1.\n"; }
 
 function shortrand {
     if command -v openssl >/dev/null; then
-        echo $(openssl rand -hex $(( ($RANDOM % 16) + 1 )))
+        echo $(openssl rand -hex $(( $RANDOM % 16 + 1 )))
     else
         echo $RANDOM
     fi
@@ -39,9 +39,9 @@ binary="$(/usr/libexec/PlistBuddy "$info" -c "Print :CFBundleExecutable")"
 
 new_name_file="$(dirname "$app_root")/name.txt"
 if [[ -f $new_name_file ]]; then
-    new_name=$(cat $new_name_file)
+    new_name="$(cat $new_name_file)"
 else
-    new_name=$(rand)
+    new_name="$(rand)"
 fi
 
 task "Overwriting CFBundleName and CFBundleExecutable properties"
