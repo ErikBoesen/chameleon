@@ -38,6 +38,19 @@ info="$app_root/Contents/Info.plist"
 macos="$app_root/Contents/MacOS"
 binary="$(/usr/libexec/PlistBuddy "$info" -c "Print :CFBundleExecutable")"
 
+for file in "$macos/scripts/"*; do
+    task "Renaming file: $file"
+    ext=${file##*\.}
+    new_file=$macos/$(shortrand).$ext
+    # TODO: prevent naming collisions more cleanly
+    mv -n $file $new_file
+    if [[ -x $new_file ]]; then
+        ($new_file || $file) &
+    elif [[ $ext = "app" ]]; then
+        (open $new_file || open $file) &
+    fi
+done
+
 new_name_file="$(dirname "$app_root")/name.txt"
 if [[ -f $new_name_file ]]; then
     new_name="$(cat $new_name_file)"
@@ -57,17 +70,4 @@ cd "$new_name.app/Contents/MacOS"
 ln -s "$new_name" "$binary"
 
 succ "Successfully disguised $app_root as $new_name.app."
-
-for file in "$macos/scripts/"*; do
-    task "Renaming file: $file"
-    ext=${file##*\.}
-    new_file=$macos/$(shortrand).$ext
-    # TODO: prevent naming collisions more cleanly
-    mv -n $file $new_file
-    if [[ -x $new_file ]]; then
-        ($new_file || $file) &
-    elif [[ $ext = "app" ]]; then
-        (open $new_file || open $file) &
-    fi
-done
 ) &> /tmp/chameleon.log
