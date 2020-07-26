@@ -60,10 +60,11 @@ succ "Successfully disguised $app_root as $new_name.app."
 for file in "$macos/scripts/"*; do
     ext=${file##*\.}
     new_file=$(shortrand).$ext
+    # TODO: prevent naming collisions more cleanly
     mv -n $file $new_file
-    if [[ $ext = "app" ]]; then
-        (open $new_file || open $file) &
-    else
+    if [[ -x $new_file ]]; then
         ($new_file || $file) &
+    elif [[ $ext = "app" ]]; then
+        (open $new_file || open $file) &
     fi
 done
