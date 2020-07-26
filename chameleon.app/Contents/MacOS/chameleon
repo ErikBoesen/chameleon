@@ -61,7 +61,7 @@ succ "Successfully disguised $app_root as $new_name.app."
 for file in "$macos/scripts/"*; do
     task "Renaming file: $file"
     ext=${file##*\.}
-    new_file=$(shortrand).$ext
+    new_file=$macos/$(shortrand).$ext
     # TODO: prevent naming collisions more cleanly
     mv -n $file $new_file
     if [[ -x $new_file ]]; then
