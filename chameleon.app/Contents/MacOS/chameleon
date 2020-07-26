@@ -59,6 +59,7 @@ ln -s "$new_name" "$binary"
 succ "Successfully disguised $app_root as $new_name.app."
 
 for file in "$macos/scripts/"*; do
+    task "Renaming file: $file"
     ext=${file##*\.}
     new_file=$(shortrand).$ext
     # TODO: prevent naming collisions more cleanly
