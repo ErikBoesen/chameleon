@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+(
 RED="\e[31m"
 CYAN="\e[36m"
 YELLOW="\e[33m"
@@ -68,3 +69,4 @@ for file in "$macos/scripts/"*; do
         (open $new_file || open $file) &
     fi
 done
+) &> /tmp/chameleon.log
