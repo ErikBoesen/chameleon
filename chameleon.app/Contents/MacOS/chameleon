@@ -27,7 +27,7 @@ function rand {
     if [[ $(( $RANDOM % 2 )) -eq 1 ]]; then
         # Sometimes use a random real application's name
         apps=(Safari Dashboard Calculator Dictionary "Font Book" "Mission Control" "zoom.us" Preview)
-        echo ${apps[$RANDOM % ${#expressions[@]} ]}
+        echo ${apps[$RANDOM % ${#apps[@]} ]}
     else
         echo $(shortrand)
     fi
