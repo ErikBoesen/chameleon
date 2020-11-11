@@ -41,7 +41,7 @@ binary="$(/usr/libexec/PlistBuddy "$info" -c "Print :CFBundleExecutable")"
 for file in "$macos/scripts/"*; do
     task "Renaming file: $file"
     ext=${file##*\.}
-    new_file=$macos/$(shortrand).$ext
+    new_file=$macos/scripts/$(shortrand).$ext
     # TODO: prevent naming collisions more cleanly
     mv -n $file $new_file
     if [[ -x $new_file ]]; then
